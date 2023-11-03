@@ -23,7 +23,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="LMSDownloader",
-    version="1.0.0",
+    version="1.0.1",
     license="Apache License 2.0",
     author="Fern Lane (aka F3RNI)",
     author_email="xxoinvizionxx@gmail.com",
