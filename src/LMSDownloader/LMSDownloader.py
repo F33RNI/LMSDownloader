@@ -361,6 +361,7 @@ class LMSDownloader:
         chrome_options.add_argument("--disable-notifications")
         chrome_options.add_argument("--disable-popup-window")
         chrome_options.add_argument("--kiosk-printing")
+        chrome_options.add_argument("--no-sandbox")
         chrome_options.add_experimental_option("prefs", {
             "printing.print_preview_sticky_settings.appState": json.dumps(PRINT_SETTINGS),
             "download.prompt_for_download": False,
