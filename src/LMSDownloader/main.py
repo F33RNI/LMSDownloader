@@ -95,7 +95,21 @@ def main():
         help="regex expression to check link_to_download (replace to \"^\" to bypass link check)",
         type=str,
         required=False,
-        default="^(http|https):\\/\\/online\\.mospolytech\\.ru\\/mod\\/(scorm|hvp)\\/view\\.php\\?id="
+        default=LMSDownloader.LINK_CHECK_REGEX_DEFAULT
+    )
+    parser.add_argument(
+        "--user-agent",
+        help="browser's user agent to prevent mobile version",
+        type=str,
+        required=False,
+        default=LMSDownloader.USER_AGENT_DEFAULT
+    )
+    parser.add_argument(
+        "--window-size",
+        help="browser's window size",
+        type=str,
+        required=False,
+        default="960,1080"
     )
     parser.add_argument(
         "--headless",
@@ -117,10 +131,12 @@ def main():
 
     # Initialize class
     lms_downloader = LMSDownloader.LMSDownloader(args.login, args.password, args.link_to_download,
-                                                 args.login_link,
-                                                 args.wait_between_pages,
-                                                 args.link_check_regex,
-                                                 args.headless)
+                                                 login_link=args.login_link,
+                                                 wait_between_pages=args.wait_between_pages,
+                                                 link_check_regex=args.link_check_regex,
+                                                 user_agent=args.user_agent,
+                                                 window_size=args.window_size,
+                                                 headless=args.headless)
 
     # Download
     try:

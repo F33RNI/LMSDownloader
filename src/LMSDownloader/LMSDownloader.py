@@ -53,12 +53,21 @@ CONTENT_TYPE_SCORM_PRESENTATION = 0
 CONTENT_TYPE_SCORM_BOOK = 1
 CONTENT_TYPE_H5P_PRESENTATION = 2
 
+# Default user agent
+USER_AGENT_DEFAULT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
+                     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+
+# Default regex to check link_to_download
+LINK_CHECK_REGEX_DEFAULT = "^(http|https):\\/\\/online\\.mospolytech\\.ru\\/mod\\/(scorm|hvp)\\/view\\.php\\?id="
+
 
 class LMSDownloader:
     def __init__(self, lms_login: str, lms_password: str, link_to_download: str,
                  login_link: str = "https://online.mospolytech.ru/login/index.php",
                  wait_between_pages: float = 1.,
-                 link_check_regex: str = "^(http|https):\\/\\/online\\.mospolytech\\.ru\\/mod\\/(scorm|hvp)\\/view\\.php\\?id=",
+                 link_check_regex: str = LINK_CHECK_REGEX_DEFAULT,
+                 user_agent: str = USER_AGENT_DEFAULT,
+                 window_size: str = "960,1080",
                  headless: bool = True) -> None:
         """
         Initializes LMSDownloader class (just copies fields)
@@ -67,7 +76,9 @@ class LMSDownloader:
         :param link_to_download: LMS link to download
         :param login_link: Link to LMS login page
         :param wait_between_pages: How long to wait after going to next page
-        :param link_check_regex: Regex expression to check link_to_download (replace to "^" to bypass link check)
+        :param link_check_regex: Regex expression to check link_to_download, replace to "^" to bypass link check
+        :param user_agent: Browser's user agent to prevent mobile version
+        :param window_size: Default browser's window size
         :param headless: Set True to open Chrome in headless mode
         """
         self._lms_login = lms_login
@@ -76,6 +87,8 @@ class LMSDownloader:
         self._login_link = login_link
         self._wait_between_pages = wait_between_pages
         self._link_check_regex = link_check_regex
+        self._user_agent = user_agent
+        self._window_size = window_size
         self._headless = headless
 
         self.browser = None
@@ -123,7 +136,7 @@ class LMSDownloader:
 
         # SCORM
         if self.browser.find_elements(By.ID, "scorm_object"):
-            # Open iframe's src
+            logging.info("Switching to the iframe")
             iframe_src = self.browser.find_element(By.ID, "scorm_object").get_attribute("src")
             if iframe_src.lower().startswith("http"):
                 self.browser.get(iframe_src)
@@ -162,6 +175,7 @@ class LMSDownloader:
         # H5P
         elif self.browser.find_elements(By.CLASS_NAME, "h5p-iframe"):
             # Open iframe's src
+            logging.info("Switching to the iframe")
             self.browser.switch_to.frame(self.browser.find_element(By.CLASS_NAME, "h5p-iframe"))
 
             # Wait until loaded
@@ -333,8 +347,12 @@ class LMSDownloader:
         logging.info("Starting browser{}... Please wait".format(" in headless mode" if self._headless else ""))
         chrome_options = webdriver.ChromeOptions()
         if self._headless:
-            chrome_options.add_argument("--headless=new")
-        # chrome_options.add_argument("--window-size=1920,1920")
+            chrome_options.add_argument("--headless=old")
+        chrome_options.add_argument(f"--user-agent={self._user_agent}")
+        chrome_options.add_argument(f"--window-size={self._window_size}")
+        # chrome_options.add_argument("--start-maximized")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         chrome_options.add_argument("--disable-infobars")
         chrome_options.add_argument("--disable-extensions")
         chrome_options.add_argument("--ignore-ssl-errors=yes")

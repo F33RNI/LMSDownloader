@@ -36,7 +36,9 @@ pip install git+https://github.com/F33RNI/LMSDownloader.git
 
 ### Usage in terminal
 ```
-lmsdownloader [-h] -l LOGIN -p PASSWORD -link LINK_TO_DOWNLOAD -path SAVE_TO [--login-link LOGIN_LINK] [--wait-between-pages WAIT_BETWEEN_PAGES] [--link-check-regex LINK_CHECK_REGEX] [--headless] [--no-logging-init]
+usage: lmsdownloader [-h] -l LOGIN -p PASSWORD -link LINK_TO_DOWNLOAD -path SAVE_TO [--login-link LOGIN_LINK]
+                     [--wait-between-pages WAIT_BETWEEN_PAGES] [--link-check-regex LINK_CHECK_REGEX]
+                     [--user-agent USER_AGENT] [--window-size WINDOW_SIZE] [--headless] [--no-logging-init]
 
 options:
   -h, --help            show this help message and exit
@@ -54,6 +56,10 @@ options:
                         how long to wait after going to next page
   --link-check-regex LINK_CHECK_REGEX
                         regex expression to check link_to_download (replace to "^" to bypass link check)
+  --user-agent USER_AGENT
+                        browser's user agent to prevent mobile version
+  --window-size WINDOW_SIZE
+                        browser's window size
   --headless            specify to open Chrome in headless mode
   --no-logging-init     specify to bypass logging initialization
 ```
@@ -84,6 +90,8 @@ Params:
 - `login_link` – Link to LMS login page
 - `wait_between_pages` – How long to wait after going to next page
 - `link_check_regex` – Regex expression to check link_to_download (replace to "^" to bypass link check)
+- `user_agent` - Browser's user agent to prevent mobile version
+- `window_size` - Default browser's window size
 - `headless` – Set True to open Chrome in headless mode
 
 ### LMSDownloader.download()
