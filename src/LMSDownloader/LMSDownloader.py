@@ -104,6 +104,7 @@ class LMSDownloader:
         enter_btn_xpath = "//input[@class='btn btn-primary'][@type='submit']"
 
         # Wait for page to load
+        logging.info("Waiting for page to load")
         WebDriverWait(self.browser, 60).until(expected_conditions.any_of(
             presence_of_element_located((By.XPATH, enter_btn_xpath)),
             presence_of_element_located((By.ID, "scorm_object")),
